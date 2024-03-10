@@ -1,0 +1,13 @@
+[package]
+name = "html"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+html_parser = "0.7"
+minify-html = "0.15"
+grass = "0.13"
+toml = "0.8"
+walkdir = "2.5"
