@@ -44,15 +44,26 @@ pub enum ErrorKind {
   Unknown,
 }
 
-impl Display for Error {
+impl Display for ErrorKind {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     write!(
       f,
-      "{:?} error\nReason:\n\t{}\nBacktrace:\n",
-      self.kind, self.reason
-    )?;
+      "{}",
+      match self {
+        ErrorKind::IO => "IO",
+        ErrorKind::Parsing => "PARSING",
+        ErrorKind::Compilation => "COMPILATION",
+        ErrorKind::Unknown => "UNKNOWN",
+      }
+    )
+  }
+}
+
+impl Display for Error {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    write!(f, "\n[{} ERROR] {}\nBacktrace:\n", self.kind, self.reason)?;
     for s in self.backtrace.iter().rev() {
-      write!(f, "\t{}\n", s)?;
+      write!(f, "{}\n", s)?;
     }
     Ok(())
   }
@@ -129,9 +140,10 @@ where
   S: Into<String>,
 {
   fn ctx(self, s: S) -> Result<T> {
-    match self {
-      Some(v) => Ok(v),
-      None => Err(Error::new(ErrorKind::Unknown, "Missing expected value")),
-    }
+    self.ok_or_else(|| Error {
+      kind: ErrorKind::Unknown,
+      reason: "Missing expected value".into(),
+      backtrace: vec![s.into()],
+    })
   }
 }

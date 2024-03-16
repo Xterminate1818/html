@@ -67,7 +67,7 @@ fn run_compiler() -> Result<()> {
 fn main() {
   let test = include_str!("../simple.html").to_string();
   // let test = " <as>    </as> ".to_string();
-  let r = parser::parse_html(&test);
+  let r = parser::parse_html(&test).unwrap();
   for l in r {
     println!("{l:?}");
   }
