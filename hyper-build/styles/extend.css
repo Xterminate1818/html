@@ -1,0 +1,231 @@
+@font-face {
+  font-family: Cascadia;
+  src: url("resources/CascadiaMonoPL.woff2");
+}
+
+body {
+    color: #444;
+    font-size: 1.2em;
+}
+.pure-img-responsive { max-width: 100%; height: auto;
+}
+
+.cascadia {
+  font-family: Cascadia;
+}
+
+.home-menu {
+    padding: 0.5em;
+    text-align: center;
+    box-shadow: 0 1px 1px rgba(0,0,0, 0.10);
+}
+.home-menu {
+    background: #333;
+}
+
+.home-menu a {
+    color: #ccc;
+}
+
+.home-menu li a:hover,
+.home-menu li a:focus {
+    animation: menu-hover-anim 0.25s ease-out;
+    animation-fill-mode: forwards;
+    background: none;
+    border: none;
+}
+
+
+.link {
+  color: #00f;
+  text-decoration: none;
+}
+
+
+.video {
+  text-align: center;
+}
+
+.video iframe {
+  width: 32em;
+  height: 18em;
+  frameborder: "0";
+}
+
+/*
+Add transition to containers so they can push in and out.
+*/
+#layout,
+#menu,
+.menu-link {
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -ms-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+/*
+This is the parent `<div>` that contains the menu and the content area.
+*/
+#layout {
+    position: relative;
+    left: 0;
+    padding-left: 0;
+}
+    #layout.active #menu {
+        left: 150px;
+        width: 150px;
+    }
+
+    #layout.active .menu-link {
+        left: 150px;
+    }
+/*
+The content `<div>` is where all your content goes.
+*/
+.content {
+    margin: 0 auto;
+    padding: 0 2em;
+    max-width: 800px;
+    margin-bottom: 50px;
+    line-height: 1.6em;
+}
+
+.header {
+     margin: 0;
+     color: #444;
+     text-align: center;
+     padding: 2.5em 4em 0;
+     border-bottom: 1px solid #eee;
+ }
+    .header h1 {
+        margin: 0.2em 0;
+        font-size: 2.5em;
+        font-weight: bold;
+    }
+     .header h2 {
+        font-weight: 300;
+        color: #888;
+        padding: 0;
+        margin-top: 0;
+    }
+
+.distinct {
+  background-color: #444;
+  color: #fff;
+  padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+@keyframes card-hover-anim {
+  to {background-color: #ccf;}
+}
+@keyframes card-text-hover-anim {
+  to {color: #222;}
+}
+
+.card {
+  background-color: #eee;
+  padding: 0.5em 0.5em 0.5em 0.5em;
+  margin: 1em 0em 1em 0em;
+  text-decoration: none;
+}
+
+  .card h1 {
+    color: #444;
+  }
+  .card h2 {
+    color: #777;
+  }
+  .card h3 {
+    color: #999;
+  }
+  .card a {
+    text-decoration: none;
+    display: block;
+  }
+
+  .card:hover {
+    animation: card-hover-anim 0.25s ease-out;
+    animation-fill-mode: forwards;
+  }
+
+
+  /* .card:hover h3 { */
+  /*   animation: card-text-hover-anim 0.25s ease-out; */
+  /*   animation-fill-mode: forwards; */
+  /* } */
+
+  .card img {
+    vertical-align: bottom;
+    float: right;
+    padding: 0em 0.1em 0em 0.1em;
+    width: 60px;
+  }
+  .card svg {
+    vertical-align: bottom;
+    float: right;
+    padding: 0em 0.1em 0em 0.1em;
+    width: 60px;
+  }
+
+
+.content-subhead {
+    margin: 50px 0 20px 0;
+    font-weight: 300;
+    color: #444;
+}
+
+
+
+.code-block {
+  background-color: #fdf6e3; 
+  color: #002b36;
+  font-family: Cascadia;
+  padding: 0em 0.5em 0em 0.5em;
+  margin: 1em 0em 1em 0em;
+  page-break-inside: avoid;
+  display: block;
+  overflow: auto;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+.code-block pre {
+  display: block;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+.code-block pre code {
+  font-family: Cascadia;
+  display: block;
+  white-space: pre-wrap;
+}
+.code-block span {
+  background-color: #fdf6e3;
+}
+  .keyword {
+    color: #6c71c4;
+  }
+  .constant {
+    color: #cb4b16;
+  }
+  .function {
+    color: #268bd2;
+  }
+  .operator {
+    color: #6c71c4;
+  }
+  .punctuation {
+    color: #586e75;
+  }
+  .string {
+    color: #859900;
+  }
+  .type {
+    color: #2aa198;
+  }
+  .property {
+    color: #586e75;
+  }
+

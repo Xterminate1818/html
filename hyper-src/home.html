@@ -1,0 +1,101 @@
+<Container>
+  <div class="header">
+    <h1 id="demo" />
+    <h2> Completed Projects </h2>
+  </div>
+  <script>
+    var i = 0;
+    var txt = 'Welcome to my home page';
+    var speed = 30;
+
+    function typeWriter() {
+      if (i < txt.length) {
+        document.getElementById("demo").innerHTML += txt.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed + Math.random() * 25.0);
+      }
+    }
+    typeWriter()
+  </script>
+
+  <div class="content">
+    <Card href="http-server.html">
+      <RustIcon />
+      <CloudflareIcon />
+      <h1> HTTP Server </h1>
+      <h3> Back End - TCP - SSL </h3>
+      <h2>
+        Currently serving you this website
+      </h2>
+    </Card>
+    <Card>
+      <RustIcon />
+      <HtmlIcon />
+      <h1> HTML Templating Engine </h1>
+      <h3> Front End - Parser Design </h3>
+      <h2>
+        Used to create this website
+      </h2>
+    </Card>
+    <Card href="html-templating.html">
+      <RustIcon />
+      <WasmIcon />
+      <h1> Forte Assembly Language </h1>
+      <h3> Programming Language - Hackathon </h3>
+      <h2>
+        Radically different machine code. A creative-coding endeavor
+      </h2>
+    </Card>
+    <Card>
+      <RustIcon />
+      <WasmIcon />
+      <h1> Fishbowl </h1>
+      <h3> Image Encoding - Hardware Rendering </h3>
+      <h2> Kinematic image processing with GPU acceleration </h2>
+    </Card>
+    <Card>
+      <RustIcon />
+      <WasmIcon />
+      <h1> Math Interpreter </h1>
+      <h3> Parser Design </h3>
+      <h2>
+        Interpret and evaluate plain-text math expressions
+      </h2>
+    </Card>
+    <Card>
+      <RustIcon />
+      <h1> nd-range </h1>
+      <h3> Vector Math - Standard Library </h3>
+      <h2>
+        An extension of Rust's 'Range' type
+        using the Cartesian Product Algorithm
+      </h2>
+    </Card>
+    <Card>
+      <RustIcon />
+      <h1> Fractal Explorer </h1>
+      <h3> Parallel Algorithms - Optimization - Hackathon </h3>
+      <h2>
+        A Mandelbrot Fractal viewer using CPU parallelism
+        and the derivative bail algorithm
+      </h2>
+    </Card>
+    <Card>
+      <PythonIcon />
+      <h1> Pokédex </h1>
+      <h3> TKinter - Web APIs - Native UI </h3>
+      <h2>
+        A TKinter app for viewing the original Pokédex, with
+        stats scraped from online sources
+      </h2>
+    </Card>
+    <Card>
+      <PythonIcon />
+      <h1> Stock Trading A.I. </h1>
+      <h3> Command Line App - Web APIs </h3>
+      <h2>
+        A simple heuristic trading algorithm
+      </h2>
+    </Card>
+  </div>
+</Container>

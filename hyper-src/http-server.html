@@ -1,0 +1,60 @@
+<Container>
+  <div class="header">
+    <h1> Rust HTTP Server </h1>
+    <h2> Keywords: Back End - TCP - SSL </h2>
+  </div>
+  <div class="content">
+    <h2 class="distinct"> Motivation </h2>
+    As a systems programmer, I want to understand the technologies
+    I use at a very low level. Modern web stacks abstract away the 
+    process of handling TCP connections, serving SSL certificates, 
+    and parsing HTTP requests. The best way to understand a technology
+    is to implement it from the ground up, I studied the HTTP 1.1 
+    specification and wrote a server to host my website.
+    <h2 class="distinct"> Architecture </h2>
+    At the most basic level, the server will translate the request URL
+    into a local file path, and respond with the file matching that path
+    if it exists. Request URLs are sanitized to prevent accessing files
+    outside of the server's directory. Two tables are used for rewriting
+    and routing URLs. This makes handling URLs predictable and robust. 
+    Because I route all traffic through Cloudflare, I decided to use its 
+    caching feature rather than implement a cache locally. 
+<@code lang="rust">
+// Snippet from the request handling code
+pub async fn construct_response(&self, request_url: &str) -> Response {
+  let sanitized_url = rewrite_url(request_url);
+  if sanitized_url != request_url {
+    return Self::redirect(&sanitized_url);
+  }
+
+  let routed_url = self.perform_routing(&sanitized_url).await;
+  if let Some(response) = 
+    self.perform_redirecting(&routed_url).await {
+    return response;
+  }
+  match self.get_resource(&routed_url).await {
+    Some(bytes) => Response::from_data(bytes),
+    None => Self::not_found(),
+  }
+}
+</@code>
+  <h2 class="distinct"> Dependencies </h2>
+  My goal with this project was to provide a functional server using as few
+  libraries as possible. The final project directly depends on four crates:
+<@code lang=toml>
+// Snippet from Cargo.toml
+[dependencies]
+log = "0.4"
+log4rs = "1.3"
+tiny_http = "0.12"
+tokio = {version = "1", features = ["full"]}
+</@code>
+  The first two crates, log and log4rs, provide logging functions which aren't critical to the
+  server's functionality. The tiny_http crate provides a simple wrapper for the standard
+  library TCP stream, and performs SSL encryption. It is used as the backbone
+  for many Rust web frameworks. While I could implement these features myself, I 
+  decided against it for security and browser compatibility reasons. Finally there is 
+  tokio, an async runtime. This is necessary because Rust does not provide a runtime
+  by default, and building one is out of scope.
+  </div>
+</Container>

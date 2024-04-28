@@ -6,6 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-html_parser = "0.7"
-toml = "0.8"
-walkdir = "2.5"
+inkjet = "0.10"
+v_htmlescape = "0.15"
+
+[profiles.dev.package.inkjet]
+opt-level = 3

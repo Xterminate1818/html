@@ -1,5 +1,0 @@
-[compile]
-output="dist"
-templates="tp"
-source="src"
-minify=false

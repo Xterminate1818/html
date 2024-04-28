@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link type="image/x-icon" href="resources/favicon.svg" rel="icon"/><!-- --><!-- --></head><body><div class="pure-g"><div class="home-menu pure-menu pure-menu-horizontal"><ul class="pure-menu-list"><li class="pure-menu-item"><a href="/home" class="pure-menu-link"> Home </a></li><li class="pure-menu-item"><a href="/projects" class="pure-menu-link"> Projects </a></li><li class="pure-menu-item"><a href="/blog" class="pure-menu-link"> Blog </a></li><li class="pure-menu-item"><a href="/about" class="pure-menu-link"> About </a></li></ul></div><div class="pure-u-1-1"><div class="header"><h1> Rust HTTP Server </h1><h2> Keywords: Back End - TCP - SSL </h2></div><div class="content"><h2 class="distinct"> Motivation </h2>
+    As a systems programmer, I want to understand the technologies
+    I use at a very low level. Modern web stacks abstract away the 
+    process of handling TCP connections, serving SSL certificates, 
+    and parsing HTTP requests. The best way to understand a technology
+    is to implement it from the ground up, I studied the HTTP 1.1 
+    specification and wrote a server to host my website.
+    <h2 class="distinct"> Architecture </h2>
+    At the most basic level, the server will translate the request URL
+    into a local file path, and respond with the file matching that path
+    if it exists. Request URLs are sanitized to prevent accessing files
+    outside of the server's directory. Two tables are used for rewriting
+    and routing URLs. This makes handling URLs predictable and robust. 
+    Because I route all traffic through Cloudflare, I decided to use its 
+    caching feature rather than implement a cache locally. 
+<div class="code-block">
+<pre><code>
+<span class="comment">&#x2f;&#x2f; Snippet from the request handling code</span>
+<span class="keyword">pub</span> <span class="keyword">async</span> <span class="keyword function">fn</span> <span class="function">construct_response</span><span class="punctuation bracket">(</span><span class="keyword storage modifier">&amp;</span><span class="variable builtin">self</span><span class="punctuation delimiter">,</span> <span class="variable parameter">request_url</span>: <span class="keyword storage modifier">&amp;</span><span class="type builtin">str</span><span class="punctuation bracket">)</span> <span class="operator">-&gt;</span> <span class="type">Response</span> <span class="punctuation bracket">{</span>
+  <span class="keyword storage">let</span> <span class="variable">sanitized_url</span> <span class="operator">=</span> <span class="function">rewrite_url</span><span class="punctuation bracket">(</span><span class="variable parameter">request_url</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="keyword control conditional">if</span> <span class="variable">sanitized_url</span> <span class="operator">!=</span> <span class="variable parameter">request_url</span> <span class="punctuation bracket">{</span>
+    <span class="keyword control return">return</span> <span class="type">Self</span><span class="punctuation delimiter">::</span><span class="function">redirect</span><span class="punctuation bracket">(</span><span class="operator">&amp;</span><span class="variable">sanitized_url</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword storage">let</span> <span class="variable">routed_url</span> <span class="operator">=</span> <span class="variable builtin">self</span><span class="punctuation delimiter">.</span><span class="function">perform_routing</span><span class="punctuation bracket">(</span><span class="operator">&amp;</span><span class="variable">sanitized_url</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="keyword control return">await</span><span class="punctuation delimiter">;</span>
+  <span class="keyword control conditional">if</span> <span class="keyword storage">let</span> <span class="constructor">Some</span><span class="punctuation bracket">(</span><span class="variable">response</span><span class="punctuation bracket">)</span> <span class="operator">=</span> 
+    <span class="variable builtin">self</span><span class="punctuation delimiter">.</span><span class="function">perform_redirecting</span><span class="punctuation bracket">(</span><span class="operator">&amp;</span><span class="variable">routed_url</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="keyword control return">await</span> <span class="punctuation bracket">{</span>
+    <span class="keyword control return">return</span> <span class="variable">response</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+  <span class="keyword control conditional">match</span> <span class="variable builtin">self</span><span class="punctuation delimiter">.</span><span class="function">get_resource</span><span class="punctuation bracket">(</span><span class="operator">&amp;</span><span class="variable">routed_url</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="keyword control return">await</span> <span class="punctuation bracket">{</span>
+    <span class="constructor">Some</span><span class="punctuation bracket">(</span><span class="variable">bytes</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="type">Response</span><span class="punctuation delimiter">::</span><span class="function">from_data</span><span class="punctuation bracket">(</span><span class="variable">bytes</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="constructor">None</span> <span class="operator">=&gt;</span> <span class="type">Self</span><span class="punctuation delimiter">::</span><span class="function">not_found</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span>
+<span class="punctuation bracket">}</span>
+</code></pre>
+</div><h2 class="distinct"> Dependencies </h2>
+  My goal with this project was to provide a functional server using as few
+  libraries as possible. The final project directly depends on four crates:
+<div class="code-block">
+<pre><code>
+&#x2f;&#x2f; Snippet from Cargo<span class="punctuation delimiter">.</span>toml
+<span class="punctuation bracket">[</span><span class="type">dependencies</span><span class="punctuation bracket">]</span>
+<span class="variable other member">log</span> <span class="operator">=</span> <span class="string">&quot;0.4&quot;</span>
+<span class="variable other member">log4rs</span> <span class="operator">=</span> <span class="string">&quot;1.3&quot;</span>
+<span class="variable other member">tiny_http</span> <span class="operator">=</span> <span class="string">&quot;0.12&quot;</span>
+<span class="variable other member">tokio</span> <span class="operator">=</span> <span class="punctuation bracket">{</span><span class="variable other member">version</span> <span class="operator">=</span> <span class="string">&quot;1&quot;</span><span class="punctuation delimiter">,</span> <span class="variable other member">features</span> <span class="operator">=</span> <span class="punctuation bracket">[</span><span class="string">&quot;full&quot;</span><span class="punctuation bracket">]</span><span class="punctuation bracket">}</span>
+</code></pre>
+</div>
+  The first two crates, log and log4rs, provide logging functions which aren't critical to the
+  server's functionality. The tiny_http crate provides a simple wrapper for the standard
+  library TCP stream, and performs SSL encryption. It is used as the backbone
+  for many Rust web frameworks. While I could implement these features myself, I 
+  decided against it for security and browser compatibility reasons. Finally there is 
+  tokio, an async runtime. This is necessary because Rust does not provide a runtime
+  by default, and building one is out of scope.
+  </div></div></div></body></html>

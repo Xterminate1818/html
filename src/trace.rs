@@ -41,6 +41,7 @@ pub enum ErrorKind {
   IO,
   Parsing,
   Compilation,
+  Memory,
   Unknown,
 }
 
@@ -54,6 +55,7 @@ impl Display for ErrorKind {
         ErrorKind::Parsing => "PARSING",
         ErrorKind::Compilation => "COMPILATION",
         ErrorKind::Unknown => "UNKNOWN",
+        ErrorKind::Memory => "MEMORY",
       }
     )
   }
@@ -82,39 +84,6 @@ impl From<std::io::Error> for Error {
       reason: format!("{}", value),
       backtrace: vec![],
     }
-  }
-}
-
-impl From<html_parser::Error> for Error {
-  fn from(value: html_parser::Error) -> Self {
-    match value {
-      html_parser::Error::Parsing(e) => Self {
-        kind: ErrorKind::Parsing,
-        reason: e,
-        backtrace: vec![],
-      },
-      html_parser::Error::Cli(e) => Self {
-        kind: ErrorKind::Unknown,
-        reason: e,
-        backtrace: vec![],
-      },
-      html_parser::Error::IO(e) => Self {
-        kind: ErrorKind::IO,
-        reason: format!("{}", e),
-        backtrace: vec![],
-      },
-      html_parser::Error::Serde(e) => Self {
-        kind: ErrorKind::Unknown,
-        reason: format!("{}", e),
-        backtrace: vec![],
-      },
-    }
-  }
-}
-
-impl From<toml::de::Error> for Error {
-  fn from(value: toml::de::Error) -> Self {
-    Error::new(ErrorKind::Parsing, value.message())
   }
 }
 
